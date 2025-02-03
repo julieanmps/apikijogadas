@@ -2,9 +2,8 @@ import os
 import uuid
 import logging
 from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from pydantic_settings import BaseSettings
-
 
 class Settings(BaseSettings):
     video_dir: str = "videos"
@@ -28,7 +27,7 @@ def validate_file(file: UploadFile):
     file.file.seek(0, 2)  # Move o cursor para o final do arquivo e verifica o tamanho
     if file.file.tell() > settings.max_file_size:  # Compara o tamanho do arquivo
         raise HTTPException(status_code=400, detail="Arquivo muito grande.")
-    file.file.seek(0)  # Retorna para o início do arquivo para a leitura posterior
+    file.file.seek(0)  # Retorna para o início do arquivo para a leitura posterior 43443
 
 @app.post("/upload/")
 async def upload_video(file: UploadFile = File(...)):
@@ -48,9 +47,9 @@ async def get_video(video_filename: str):
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Vídeo não encontrado.")
     
-    return FileResponse(file_path, media_type="video/mp4", filename=video_filename)
+    return FileResponse(file_path, media_type="video/mp4")
 
-@app.get("/videos/{video_filename}/download")
+@app.get("/videos/download/{video_filename}")
 async def download_video(video_filename: str):
     file_path = os.path.join(settings.video_dir, video_filename)
     if not os.path.exists(file_path):
@@ -61,7 +60,3 @@ async def download_video(video_filename: str):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
-
-#env\Scripts\activate
