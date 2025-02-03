@@ -8,7 +8,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     video_dir: str = "videos"
     allowed_extensions: set = {"mp4", "avi", "mov"}
-    max_file_size: int = 50 * 1024 * 1024  # 50 MB
+    max_file_size: int = 64 * 1024 * 1024  
 
 settings = Settings()
 
